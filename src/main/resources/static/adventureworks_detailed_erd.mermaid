@@ -1,0 +1,628 @@
+erDiagram
+    %% Person Schema
+    BUSINESSENTITY {
+        int BusinessEntityID PK
+        uniqueidentifier rowguid
+        datetime ModifiedDate
+    }
+    
+    PERSON {
+        int BusinessEntityID PK
+        nvarchar NameStyle
+        nvarchar Title
+        nvarchar FirstName
+        nvarchar MiddleName
+        nvarchar LastName
+        nvarchar Suffix
+        uniqueidentifier rowguid
+        datetime ModifiedDate
+    }
+    
+    ADDRESS {
+        int AddressID PK
+        nvarchar AddressLine1
+        nvarchar AddressLine2
+        nvarchar City
+        int StateProvinceID FK
+        nvarchar PostalCode
+        geography SpatialLocation
+        uniqueidentifier rowguid
+        datetime ModifiedDate
+    }
+    
+    STATEPROVINENCE {
+        int StateProvinceID PK
+        nvarchar Code
+        nvarchar Name
+        int CountryRegionCode FK
+        bit IsOnlyStateProvinceFlag
+        uniqueidentifier rowguid
+        datetime ModifiedDate
+    }
+    
+    COUNTRYREGION {
+        nvarchar CountryRegionCode PK
+        nvarchar Name
+        datetime ModifiedDate
+    }
+    
+    BUSINESSENTITYADDRESS {
+        int BusinessEntityID PK,FK
+        int AddressID PK,FK
+        int AddressTypeID PK,FK
+        uniqueidentifier rowguid
+        datetime ModifiedDate
+    }
+    
+    ADDRESSTYPE {
+        int AddressTypeID PK
+        nvarchar Name
+        uniqueidentifier rowguid
+        datetime ModifiedDate
+    }
+    
+    EMAILADDRESS {
+        int BusinessEntityID PK,FK
+        int EmailAddressID PK
+        nvarchar EmailAddress
+        uniqueidentifier rowguid
+        datetime ModifiedDate
+    }
+    
+    PHONE {
+        int BusinessEntityID PK,FK
+        nvarchar Phone
+        int PhoneNumberTypeID PK,FK
+        uniqueidentifier rowguid
+        datetime ModifiedDate
+    }
+    
+    PHONENUMBERTYPE {
+        int PhoneNumberTypeID PK
+        nvarchar Name
+        datetime ModifiedDate
+    }
+    
+    BUSINESSENTITYCONTACT {
+        int BusinessEntityID PK,FK
+        int PersonID PK,FK
+        int ContactTypeID PK,FK
+        uniqueidentifier rowguid
+        datetime ModifiedDate
+    }
+    
+    CONTACTTYPE {
+        int ContactTypeID PK
+        nvarchar Name
+        datetime ModifiedDate
+    }
+    
+    PASSWORD {
+        int BusinessEntityID PK,FK
+        varchar PasswordHash
+        varchar PasswordSalt
+        uniqueidentifier rowguid
+        datetime ModifiedDate
+    }
+    
+    %% HumanResources Schema
+    EMPLOYEE {
+        int BusinessEntityID PK,FK
+        nvarchar NationalIDNumber UK
+        nvarchar LoginID UK
+        hierarchyid OrganizationNode
+        nvarchar JobTitle
+        date BirthDate
+        nchar MaritalStatus
+        nchar Gender
+        date HireDate
+        bit SalariedFlag
+        smallint VacationHours
+        smallint SickLeaveHours
+        bit CurrentFlag
+        uniqueidentifier rowguid
+        datetime ModifiedDate
+    }
+    
+    DEPARTMENT {
+        smallint DepartmentID PK
+        nvarchar Name
+        nvarchar GroupName
+        datetime ModifiedDate
+    }
+    
+    EMPLOYEEDEPARTMENTHISTORY {
+        int BusinessEntityID PK,FK
+        smallint DepartmentID PK,FK
+        tinyint ShiftID PK,FK
+        date StartDate PK
+        date EndDate
+        datetime ModifiedDate
+    }
+    
+    SHIFT {
+        tinyint ShiftID PK
+        nvarchar Name
+        time StartTime
+        time EndTime
+        datetime ModifiedDate
+    }
+    
+    EMPLOYEEPAYHISTORY {
+        int BusinessEntityID PK,FK
+        datetime RateChangeDate PK
+        money Rate
+        tinyint PayFrequency
+        datetime ModifiedDate
+    }
+    
+    JOBCANDIDATE {
+        int JobCandidateID PK
+        int BusinessEntityID FK
+        xml Resume
+        datetime ModifiedDate
+    }
+    
+    %% Sales Schema
+    CUSTOMER {
+        int CustomerID PK
+        int PersonID FK
+        int StoreID FK
+        int TerritoryID FK
+        nvarchar AccountNumber
+        uniqueidentifier rowguid
+        datetime ModifiedDate
+    }
+    
+    STORE {
+        int StoreID PK,FK
+        nvarchar Name
+        int SalesPersonID FK
+        xml Demographics
+        uniqueidentifier rowguid
+        datetime ModifiedDate
+    }
+    
+    SALESPERSON {
+        int BusinessEntityID PK,FK
+        int TerritoryID FK
+        money SalesQuota
+        money Bonus
+        decimal CommissionPct
+        money SalesYTD
+        money SalesLastYear
+        uniqueidentifier rowguid
+        datetime ModifiedDate
+    }
+    
+    TERRITORY {
+        int TerritoryID PK
+        nvarchar Name
+        nvarchar CountryRegionCode FK
+        nvarchar Group
+        money SalesYTD
+        money SalesLastYear
+        money CostYTD
+        money CostLastYear
+        uniqueidentifier rowguid
+        datetime ModifiedDate
+    }
+    
+    SALESORDERHEADER {
+        int SalesOrderID PK
+        nvarchar OrderNumber
+        int CustomerID FK
+        int SalesPersonID FK
+        int TerritoryID FK
+        datetime OrderDate
+        datetime DueDate
+        datetime ShipDate
+        tinyint Status
+        bit OnlineOrderFlag
+        nvarchar SalesOrderNumber
+        nvarchar PurchaseOrderNumber
+        nvarchar AccountNumber
+        int ShipToAddressID FK
+        int BillToAddressID FK
+        int ShipMethodID FK
+        nvarchar CreditCardApprovalCode
+        money SubTotal
+        money TaxAmt
+        money Freight
+        money TotalDue
+        uniqueidentifier rowguid
+        datetime ModifiedDate
+    }
+    
+    SALESORDERDETAIL {
+        int SalesOrderID PK,FK
+        int SalesOrderDetailID PK
+        nvarchar CarrierTrackingNumber
+        smallint OrderQty
+        int ProductID FK
+        decimal UnitPrice
+        decimal UnitPriceDiscount
+        money LineTotal
+        uniqueidentifier rowguid
+        datetime ModifiedDate
+    }
+    
+    SHIPMETHODS {
+        int ShipMethodID PK
+        nvarchar Name
+        decimal ShipBase
+        decimal ShipRate
+        uniqueidentifier rowguid
+        datetime ModifiedDate
+    }
+    
+    CREDITCARD {
+        int CreditCardID PK
+        nvarchar CardType
+        nvarchar CardNumber UK
+        tinyint ExpMonth
+        smallint ExpYear
+        datetime ModifiedDate
+    }
+    
+    CURRENCY {
+        nchar CurrencyCode PK
+        nvarchar Name
+        datetime ModifiedDate
+    }
+    
+    CURRENCYRATE {
+        int CurrencyRateID PK
+        datetime CurrencyRateDate
+        nchar FromCurrencyCode FK
+        nchar ToCurrencyCode FK
+        money AverageRate
+        money EndOfDayRate
+        datetime ModifiedDate
+    }
+    
+    COUNTRYREGIONCURRENCY {
+        nvarchar CountryRegionCode PK,FK
+        nchar CurrencyCode PK,FK
+        datetime ModifiedDate
+    }
+    
+    SALESREASON {
+        int SalesReasonID PK
+        nvarchar Name
+        nvarchar ReasonType
+        datetime ModifiedDate
+    }
+    
+    SALESTAXRATE {
+        int SalesTaxRateID PK
+        int StateProvinceID FK
+        tinyint TaxType
+        decimal TaxRate
+        nvarchar Name
+        uniqueidentifier rowguid
+        datetime ModifiedDate
+    }
+    
+    %% Production Schema
+    PRODUCT {
+        int ProductID PK
+        nvarchar Name UK
+        nvarchar ProductNumber UK
+        bit MakeFlag
+        bit FinishedGoodsFlag
+        nvarchar Color
+        smallint SafetyStockLevel
+        smallint ReorderPoint
+        decimal StandardCost
+        decimal ListPrice
+        nvarchar Size
+        nchar SizeUnitMeasureCode FK
+        nchar WeightUnitMeasureCode FK
+        decimal Weight
+        int DaysToManufacture
+        nchar ProductLine
+        nchar Class
+        nchar Style
+        int ProductSubcategoryID FK
+        int ProductModelID FK
+        datetime SellStartDate
+        datetime SellEndDate
+        datetime DiscontinuedDate
+        uniqueidentifier rowguid
+        datetime ModifiedDate
+    }
+    
+    PRODUCTCATEGORY {
+        int ProductCategoryID PK
+        nvarchar Name UK
+        uniqueidentifier rowguid
+        datetime ModifiedDate
+    }
+    
+    PRODUCTSUBCATEGORY {
+        int ProductSubcategoryID PK
+        int ProductCategoryID FK
+        nvarchar Name UK
+        uniqueidentifier rowguid
+        datetime ModifiedDate
+    }
+    
+    PRODUCTMODEL {
+        int ProductModelID PK
+        nvarchar Name UK
+        xml CatalogDescription
+        xml Instructions
+        uniqueidentifier rowguid
+        datetime ModifiedDate
+    }
+    
+    PRODUCTMODELDESCRIPTION {
+        int ProductModelID PK,FK
+        int CultureID PK,FK
+        nvarchar Description
+        datetime ModifiedDate
+    }
+    
+    CULTURE {
+        nchar CultureID PK
+        nvarchar Name UK
+        datetime ModifiedDate
+    }
+    
+    BILLOFMATERIALS {
+        int BillOfMaterialsID PK
+        int ProductAssemblyID FK
+        int ComponentID FK
+        datetime StartDate
+        datetime EndDate
+        nchar UnitMeasureCode FK
+        smallint BOMLevel
+        decimal PerAssemblyQty
+        datetime ModifiedDate
+    }
+    
+    UNITOFMEASURE {
+        nchar UnitMeasureCode PK
+        nvarchar Name UK
+        datetime ModifiedDate
+    }
+    
+    PRODUCTPHOTO {
+        int ProductPhotoID PK
+        varbinary ThumbNailPhoto
+        nvarchar ThumbnailPhotoFileName
+        varbinary LargePhoto
+        nvarchar LargePhotoFileName
+        datetime ModifiedDate
+    }
+    
+    ILLUSTRATION {
+        int IllustrationID PK
+        xml Diagram
+        datetime ModifiedDate
+    }
+    
+    PRODUCTMODELILLUSTRATION {
+        int ProductModelID PK,FK
+        int IllustrationID PK,FK
+        datetime ModifiedDate
+    }
+    
+    LOCATION {
+        smallint LocationID PK
+        nvarchar Name UK
+        smallmoney CostRate
+        decimal Availability
+        datetime ModifiedDate
+    }
+    
+    PRODUCTINVENTORY {
+        int ProductID PK,FK
+        smallint LocationID PK,FK
+        nchar Shelf
+        tinyint Bin
+        smallint Quantity
+        uniqueidentifier rowguid
+        datetime ModifiedDate
+    }
+    
+    DOCUMENT {
+        hierarchyid DocumentNode PK
+        nvarchar Title
+        int Owner FK
+        bit FolderFlag
+        nvarchar FileName UK
+        nvarchar FileExtension
+        nchar Revision
+        int ChangeNumber
+        tinyint Status
+        nvarchar DocumentSummary
+        varbinary Document
+        uniqueidentifier rowguid
+        datetime ModifiedDate
+    }
+    
+    WORKORDER {
+        int WorkOrderID PK
+        int ProductID FK
+        int OrderQty
+        int StockedQty
+        smallint ScrappedQty
+        datetime StartDate
+        datetime EndDate
+        datetime DueDate
+        smallint ScrapReasonID FK
+        uniqueidentifier rowguid
+        datetime ModifiedDate
+    }
+    
+    SCRAPREASON {
+        smallint ScrapReasonID PK
+        nvarchar Name
+        datetime ModifiedDate
+    }
+    
+    TRANSACTIONHISTORY {
+        int TransactionID PK
+        int ProductID FK
+        int ReferenceOrderID
+        int ReferenceOrderLineID
+        datetime TransactionDate
+        nchar TransactionType
+        int Quantity
+        money ActualCost
+        datetime ModifiedDate
+    }
+    
+    %% Purchasing Schema
+    VENDOR {
+        int VendorID PK,FK
+        nvarchar Name UK
+        tinyint ActiveFlag
+        nvarchar CreditRating
+        bit PreferredVendorFlag
+        nvarchar AccountNumber UK
+        money MinOrderQty
+        money MaxOrderQty
+        int OnOrderQty
+        nvarchar UnitMeasureCode FK
+        money ExpectedDeliveryDate
+        datetime ModifiedDate
+    }
+    
+    PRODUCTVENDOR {
+        int ProductID PK,FK
+        int VendorID PK,FK
+        int AverageLeadTime
+        int StandardPrice
+        decimal LastReceiptCost
+        datetime LastReceiptDate
+        int MinOrderQty
+        int MaxOrderQty
+        int OnOrderQty
+        nchar UnitMeasureCode FK
+        datetime ModifiedDate
+    }
+    
+    PURCHASEORDERHEADER {
+        int PurchaseOrderID PK
+        tinyint RevisionNumber
+        tinyint Status
+        int EmployeeID FK
+        int VendorID FK
+        int ShipMethodID FK
+        datetime OrderDate
+        datetime ShipDate
+        money SubTotal
+        money TaxAmt
+        money Freight
+        money TotalDue
+        datetime ModifiedDate
+    }
+    
+    PURCHASEORDERDETAIL {
+        int PurchaseOrderID PK,FK
+        int PurchaseOrderDetailID PK
+        datetime DueDate
+        smallint OrderQty
+        int ProductID FK
+        money UnitPrice
+        int LineTotal
+        int ReceivedQty
+        int RejectedQty
+        int StockedQty
+        datetime ModifiedDate
+    }
+    
+    %% Relationships
+    BUSINESSENTITY ||--o{ PERSON : "has"
+    BUSINESSENTITY ||--o{ EMPLOYEE : "is"
+    BUSINESSENTITY ||--o{ STORE : "is"
+    BUSINESSENTITY ||--o{ VENDOR : "is"
+    BUSINESSENTITY ||--o{ EMAILADDRESS : "has"
+    BUSINESSENTITY ||--o{ PHONE : "has"
+    BUSINESSENTITY ||--o{ PASSWORD : "has"
+    BUSINESSENTITY ||--o{ BUSINESSENTITYADDRESS : "has"
+    BUSINESSENTITY ||--o{ BUSINESSENTITYCONTACT : "contacts"
+    
+    ADDRESS }o--|| STATEPROVINENCE : "located_in"
+    STATEPROVINENCE }o--|| COUNTRYREGION : "located_in"
+    BUSINESSENTITYADDRESS }o--|| ADDRESS : "addresses"
+    BUSINESSENTITYADDRESS }o--|| ADDRESSTYPE : "types"
+    
+    PHONE }o--|| PHONENUMBERTYPE : "types"
+    
+    BUSINESSENTITYCONTACT }o--|| PERSON : "contacts"
+    BUSINESSENTITYCONTACT }o--|| CONTACTTYPE : "types"
+    
+    EMPLOYEE }o--|| DEPARTMENT : "belongs_to"
+    EMPLOYEE ||--o{ EMPLOYEEDEPARTMENTHISTORY : "history"
+    EMPLOYEE ||--o{ EMPLOYEEPAYHISTORY : "history"
+    EMPLOYEE ||--o{ JOBCANDIDATE : "candidate_for"
+    EMPLOYEEDEPARTMENTHISTORY }o--|| SHIFT : "works"
+    
+    CUSTOMER }o--|| PERSON : "is"
+    CUSTOMER }o--|| STORE : "works_for"
+    CUSTOMER }o--|| TERRITORY : "in"
+    
+    STORE }o--|| SALESPERSON : "managed_by"
+    
+    SALESPERSON }o--|| TERRITORY : "covers"
+    
+    SALESORDERHEADER }o--|| CUSTOMER : "from"
+    SALESORDERHEADER }o--|| ADDRESS : "ship_to"
+    SALESORDERHEADER }o--|| ADDRESS : "bill_to"
+    SALESORDERHEADER }o--|| SALESPERSON : "by"
+    SALESORDERHEADER }o--|| TERRITORY : "in"
+    SALESORDERHEADER }o--|| SHIPMETHODS : "via"
+    SALESORDERHEADER ||--o{ SALESORDERDETAIL : "has"
+    
+    SALESORDERDETAIL }o--|| PRODUCT : "contains"
+    
+    TERRITORY }o--|| COUNTRYREGION : "in"
+    
+    SALESTAXRATE }o--|| STATEPROVINENCE : "for"
+    
+    CURRENCY ||--o{ CURRENCYRATE : "from"
+    CURRENCY ||--o{ CURRENCYRATE : "to"
+    COUNTRYREGIONCURRENCY }o--|| CURRENCY : "uses"
+    COUNTRYREGIONCURRENCY }o--|| COUNTRYREGION : "in"
+    
+    PRODUCT }o--|| PRODUCTSUBCATEGORY : "in"
+    PRODUCT }o--|| PRODUCTMODEL : "model"
+    PRODUCT }o--|| UNITOFMEASURE : "size_unit"
+    PRODUCT }o--|| UNITOFMEASURE : "weight_unit"
+    PRODUCTSUBCATEGORY }o--|| PRODUCTCATEGORY : "in"
+    
+    PRODUCTMODEL ||--o{ PRODUCTMODELDESCRIPTION : "described_in"
+    PRODUCTMODELDESCRIPTION }o--|| CULTURE : "language"
+    
+    PRODUCTMODEL ||--o{ PRODUCTMODELILLUSTRATION : "illustrated_by"
+    ILLUSTRATION }o--|| PRODUCTMODELILLUSTRATION : ""
+    PRODUCTPHOTO ||--o{ PRODUCT : "photos"
+    
+    BILLOFMATERIALS }o--|| PRODUCT : "assembly"
+    BILLOFMATERIALS }o--|| PRODUCT : "component"
+    BILLOFMATERIALS }o--|| UNITOFMEASURE : "measured_in"
+    
+    PRODUCTINVENTORY }o--|| PRODUCT : "of"
+    PRODUCTINVENTORY }o--|| LOCATION : "at"
+    
+    DOCUMENT }o--|| EMPLOYEE : "owned_by"
+    
+    WORKORDER }o--|| PRODUCT : "for"
+    WORKORDER }o--|| SCRAPREASON : "reason"
+    
+    TRANSACTIONHISTORY }o--|| PRODUCT : "of"
+    
+    VENDOR ||--o{ PRODUCTVENDOR : "supplies"
+    PRODUCT ||--o{ PRODUCTVENDOR : "supplied_by"
+    PRODUCTVENDOR }o--|| UNITOFMEASURE : "measured_in"
+    
+    PURCHASEORDERHEADER }o--|| EMPLOYEE : "by"
+    PURCHASEORDERHEADER }o--|| VENDOR : "from"
+    PURCHASEORDERHEADER }o--|| SHIPMETHODS : "via"
+    PURCHASEORDERHEADER ||--o{ PURCHASEORDERDETAIL : "has"
+    
+    PURCHASEORDERDETAIL }o--|| PRODUCT : "of"
