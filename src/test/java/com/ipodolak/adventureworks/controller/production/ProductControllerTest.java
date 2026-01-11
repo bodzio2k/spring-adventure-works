@@ -6,7 +6,7 @@ import com.ipodolak.adventureworks.service.production.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,16 +29,15 @@ class ProductControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @MockitoBean
     private ProductService productService;
 
+    private ObjectMapper objectMapper;
     private ProductDto testProductDto;
 
     @BeforeEach
     void setUp() {
+        objectMapper = new ObjectMapper();
         testProductDto = new ProductDto();
         testProductDto.setProductId(1);
         testProductDto.setName("Test Bike");
