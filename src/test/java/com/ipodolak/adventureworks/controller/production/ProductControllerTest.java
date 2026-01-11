@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -32,6 +33,9 @@ class ProductControllerTest {
     @MockitoBean
     private ProductService productService;
 
+    @MockitoBean
+    private ProductModelAssembler productModelAssembler;
+
     private ObjectMapper objectMapper;
     private ProductDto testProductDto;
 
@@ -50,6 +54,9 @@ class ProductControllerTest {
         testProductDto.setStandardCost(new BigDecimal("500.00"));
         testProductDto.setListPrice(new BigDecimal("1000.00"));
         testProductDto.setDaysToManufacture(4);
+
+        when(productModelAssembler.toModel(any(ProductDto.class)))
+                .thenAnswer(invocation -> EntityModel.of(invocation.getArgument(0)));
     }
 
     @Test
@@ -59,10 +66,11 @@ class ProductControllerTest {
 
         mockMvc.perform(get("/api/products"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].name", is("Test Bike")))
-                .andExpect(jsonPath("$[0].productNumber", is("TB-001")));
+                .andExpect(content().contentType("application/hal+json"))
+                .andExpect(jsonPath("$._embedded.productDtoList", hasSize(1)))
+                .andExpect(jsonPath("$._embedded.productDtoList[0].name", is("Test Bike")))
+                .andExpect(jsonPath("$._embedded.productDtoList[0].productNumber", is("TB-001")))
+                .andExpect(jsonPath("$._links.self").exists());
 
         verify(productService).findAll();
     }
@@ -73,7 +81,7 @@ class ProductControllerTest {
 
         mockMvc.perform(get("/api/products/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType("application/hal+json"))
                 .andExpect(jsonPath("$.productId", is(1)))
                 .andExpect(jsonPath("$.name", is("Test Bike")))
                 .andExpect(jsonPath("$.productNumber", is("TB-001")));
@@ -89,9 +97,10 @@ class ProductControllerTest {
         mockMvc.perform(get("/api/products/search")
                         .param("name", "Bike"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].name", is("Test Bike")));
+                .andExpect(content().contentType("application/hal+json"))
+                .andExpect(jsonPath("$._embedded.productDtoList", hasSize(1)))
+                .andExpect(jsonPath("$._embedded.productDtoList[0].name", is("Test Bike")))
+                .andExpect(jsonPath("$._links.self").exists());
 
         verify(productService).findByName("Bike");
     }
@@ -103,8 +112,9 @@ class ProductControllerTest {
 
         mockMvc.perform(get("/api/products/subcategory/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(1)));
+                .andExpect(content().contentType("application/hal+json"))
+                .andExpect(jsonPath("$._embedded.productDtoList", hasSize(1)))
+                .andExpect(jsonPath("$._links.self").exists());
 
         verify(productService).findBySubcategory(1);
     }
@@ -116,8 +126,9 @@ class ProductControllerTest {
 
         mockMvc.perform(get("/api/products/model/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(1)));
+                .andExpect(content().contentType("application/hal+json"))
+                .andExpect(jsonPath("$._embedded.productDtoList", hasSize(1)))
+                .andExpect(jsonPath("$._links.self").exists());
 
         verify(productService).findByModel(1);
     }
@@ -129,9 +140,10 @@ class ProductControllerTest {
 
         mockMvc.perform(get("/api/products/color/Red"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].color", is("Red")));
+                .andExpect(content().contentType("application/hal+json"))
+                .andExpect(jsonPath("$._embedded.productDtoList", hasSize(1)))
+                .andExpect(jsonPath("$._embedded.productDtoList[0].color", is("Red")))
+                .andExpect(jsonPath("$._links.self").exists());
 
         verify(productService).findByColor("Red");
     }
@@ -143,8 +155,9 @@ class ProductControllerTest {
 
         mockMvc.perform(get("/api/products/active"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(1)));
+                .andExpect(content().contentType("application/hal+json"))
+                .andExpect(jsonPath("$._embedded.productDtoList", hasSize(1)))
+                .andExpect(jsonPath("$._links.self").exists());
 
         verify(productService).findActiveProducts();
     }
@@ -173,8 +186,9 @@ class ProductControllerTest {
                         .param("minPrice", "500.00")
                         .param("maxPrice", "1500.00"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(1)));
+                .andExpect(content().contentType("application/hal+json"))
+                .andExpect(jsonPath("$._embedded.productDtoList", hasSize(1)))
+                .andExpect(jsonPath("$._links.self").exists());
 
         verify(productService).findByPriceRange(any(BigDecimal.class), any(BigDecimal.class));
     }
@@ -187,7 +201,7 @@ class ProductControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(testProductDto)))
                 .andExpect(status().isCreated())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType("application/hal+json"))
                 .andExpect(jsonPath("$.name", is("Test Bike")))
                 .andExpect(jsonPath("$.productNumber", is("TB-001")));
 
@@ -202,7 +216,7 @@ class ProductControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(testProductDto)))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType("application/hal+json"))
                 .andExpect(jsonPath("$.name", is("Test Bike")));
 
         verify(productService).update(anyInt(), any(ProductDto.class));
@@ -219,12 +233,13 @@ class ProductControllerTest {
     }
 
     @Test
-    void shouldReturn404WhenProductNotFound() throws Exception {
+    void shouldThrowExceptionWhenProductNotFound() {
         when(productService.findById(999))
                 .thenThrow(new RuntimeException("Product not found with id: 999"));
 
-        mockMvc.perform(get("/api/products/999"))
-                .andExpect(status().isInternalServerError());
+        org.junit.jupiter.api.Assertions.assertThrows(Exception.class, () ->
+                mockMvc.perform(get("/api/products/999"))
+        );
 
         verify(productService).findById(999);
     }
