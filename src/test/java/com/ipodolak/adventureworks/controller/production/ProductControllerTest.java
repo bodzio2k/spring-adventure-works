@@ -1,7 +1,6 @@
 package com.ipodolak.adventureworks.controller.production;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ipodolak.adventureworks.dto.production.ProductDto;
 import com.ipodolak.adventureworks.service.production.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -61,7 +61,7 @@ class ProductControllerTest {
 
     @Test
     void shouldGetAllProducts() throws Exception {
-        List<ProductDto> products = Arrays.asList(testProductDto);
+        List<ProductDto> products = Collections.singletonList(testProductDto);
         when(productService.findAll()).thenReturn(products);
 
         mockMvc.perform(get("/api/products"))
@@ -91,7 +91,7 @@ class ProductControllerTest {
 
     @Test
     void shouldSearchProductsByName() throws Exception {
-        List<ProductDto> products = Arrays.asList(testProductDto);
+        List<ProductDto> products = Collections.singletonList(testProductDto);
         when(productService.findByName("Bike")).thenReturn(products);
 
         mockMvc.perform(get("/api/products/search")
@@ -107,7 +107,7 @@ class ProductControllerTest {
 
     @Test
     void shouldGetProductsBySubcategory() throws Exception {
-        List<ProductDto> products = Arrays.asList(testProductDto);
+        List<ProductDto> products = Collections.singletonList(testProductDto);
         when(productService.findBySubcategory(1)).thenReturn(products);
 
         mockMvc.perform(get("/api/products/subcategory/1"))
@@ -121,7 +121,7 @@ class ProductControllerTest {
 
     @Test
     void shouldGetProductsByModel() throws Exception {
-        List<ProductDto> products = Arrays.asList(testProductDto);
+        List<ProductDto> products = Collections.singletonList(testProductDto);
         when(productService.findByModel(1)).thenReturn(products);
 
         mockMvc.perform(get("/api/products/model/1"))
@@ -135,7 +135,7 @@ class ProductControllerTest {
 
     @Test
     void shouldGetProductsByColor() throws Exception {
-        List<ProductDto> products = Arrays.asList(testProductDto);
+        List<ProductDto> products = Collections.singletonList(testProductDto);
         when(productService.findByColor("Red")).thenReturn(products);
 
         mockMvc.perform(get("/api/products/color/Red"))
@@ -150,7 +150,7 @@ class ProductControllerTest {
 
     @Test
     void shouldGetActiveProducts() throws Exception {
-        List<ProductDto> products = Arrays.asList(testProductDto);
+        List<ProductDto> products = Collections.singletonList(testProductDto);
         when(productService.findActiveProducts()).thenReturn(products);
 
         mockMvc.perform(get("/api/products/active"))
@@ -178,7 +178,7 @@ class ProductControllerTest {
 
     @Test
     void shouldGetProductsByPriceRange() throws Exception {
-        List<ProductDto> products = Arrays.asList(testProductDto);
+        List<ProductDto> products = Collections.singletonList(testProductDto);
         when(productService.findByPriceRange(any(BigDecimal.class), any(BigDecimal.class)))
                 .thenReturn(products);
 

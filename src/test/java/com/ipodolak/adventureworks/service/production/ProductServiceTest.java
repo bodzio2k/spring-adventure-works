@@ -1,8 +1,6 @@
 package com.ipodolak.adventureworks.service.production;
 
-import com.ipodolak.adventureworks.dto.production.ProductDto;
 import com.ipodolak.adventureworks.entity.production.Product;
-import com.ipodolak.adventureworks.mapper.production.ProductMapper;
 import com.ipodolak.adventureworks.repository.production.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,10 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -66,7 +61,7 @@ class ProductServiceTest {
 
     @Test
     void shouldFindAllProducts() {
-        List<Product> products = Arrays.asList(testProduct);
+        List<Product> products = Collections.singletonList(testProduct);
         when(productRepository.findAll()).thenReturn(products);
         when(productMapper.toDto(any(Product.class))).thenReturn(testProductDto);
 
@@ -102,7 +97,7 @@ class ProductServiceTest {
 
     @Test
     void shouldFindProductsByName() {
-        List<Product> products = Arrays.asList(testProduct);
+        List<Product> products = Collections.singletonList(testProduct);
         when(productRepository.findByNameContainingIgnoreCase("Bike")).thenReturn(products);
         when(productMapper.toDto(any(Product.class))).thenReturn(testProductDto);
 
@@ -114,7 +109,7 @@ class ProductServiceTest {
 
     @Test
     void shouldFindProductsBySubcategory() {
-        List<Product> products = Arrays.asList(testProduct);
+        List<Product> products = Collections.singletonList(testProduct);
         when(productRepository.findByProductSubcategoryId(1)).thenReturn(products);
         when(productMapper.toDto(any(Product.class))).thenReturn(testProductDto);
 
@@ -126,7 +121,7 @@ class ProductServiceTest {
 
     @Test
     void shouldFindProductsByColor() {
-        List<Product> products = Arrays.asList(testProduct);
+        List<Product> products = Collections.singletonList(testProduct);
         when(productRepository.findByColor("Red")).thenReturn(products);
         when(productMapper.toDto(any(Product.class))).thenReturn(testProductDto);
 
@@ -138,7 +133,7 @@ class ProductServiceTest {
 
     @Test
     void shouldFindActiveProducts() {
-        List<Product> products = Arrays.asList(testProduct);
+        List<Product> products = Collections.singletonList(testProduct);
         when(productRepository.findActiveProducts()).thenReturn(products);
         when(productMapper.toDto(any(Product.class))).thenReturn(testProductDto);
 
@@ -164,7 +159,7 @@ class ProductServiceTest {
     void shouldFindProductsByPriceRange() {
         BigDecimal minPrice = new BigDecimal("500.00");
         BigDecimal maxPrice = new BigDecimal("1500.00");
-        List<Product> products = Arrays.asList(testProduct);
+        List<Product> products = Collections.singletonList(testProduct);
 
         when(productRepository.findByPriceRange(minPrice, maxPrice)).thenReturn(products);
         when(productMapper.toDto(any(Product.class))).thenReturn(testProductDto);
