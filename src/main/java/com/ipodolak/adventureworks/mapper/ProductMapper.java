@@ -42,7 +42,7 @@ public interface ProductMapper {
     @Named("stringToProductLineEnum")
     default JsonNullable<ProductLineEnum> stringToProductLineEnum(String value) {
         if (value == null) {
-            return JsonNullable.undefined();
+            return JsonNullable.of(null);
         }
         return JsonNullable.of(ProductLineEnum.fromValue(value.trim()));
     }
@@ -50,7 +50,7 @@ public interface ProductMapper {
     @Named("stringToPropertyClassEnum")
     default JsonNullable<PropertyClassEnum> stringToPropertyClassEnum(String value) {
         if (value == null) {
-            return JsonNullable.undefined();
+            return JsonNullable.of(null);
         }
         return JsonNullable.of(PropertyClassEnum.fromValue(value.trim()));
     }
@@ -58,7 +58,7 @@ public interface ProductMapper {
     @Named("stringToStyleEnum")
     default JsonNullable<StyleEnum> stringToStyleEnum(String value) {
         if (value == null) {
-            return JsonNullable.undefined();
+            return JsonNullable.of(null);
         }
         return JsonNullable.of(StyleEnum.fromValue(value.trim()));
     }
@@ -73,7 +73,7 @@ public interface ProductMapper {
     @Named("bigDecimalToJsonNullableDouble")
     default JsonNullable<Double> bigDecimalToJsonNullableDouble(BigDecimal value) {
         if (value == null) {
-            return JsonNullable.undefined();
+            return JsonNullable.of(null);
         }
         return JsonNullable.of(value.doubleValue());
     }
@@ -91,7 +91,7 @@ public interface ProductMapper {
     @Named("localDateTimeToJsonNullableOffsetDateTime")
     default JsonNullable<OffsetDateTime> localDateTimeToJsonNullableOffsetDateTime(LocalDateTime value) {
         if (value == null) {
-            return JsonNullable.undefined();
+            return JsonNullable.of(null);
         }
         return JsonNullable.of(value.atOffset(ZoneOffset.UTC));
     }
@@ -101,7 +101,7 @@ public interface ProductMapper {
     @Named("stringToJsonNullable")
     default JsonNullable<String> stringToJsonNullable(String value) {
         if (value == null) {
-            return JsonNullable.undefined();
+            return JsonNullable.of(null);
         }
         return JsonNullable.of(value);
     }
@@ -109,7 +109,7 @@ public interface ProductMapper {
     @Named("integerToJsonNullable")
     default JsonNullable<Integer> integerToJsonNullable(Integer value) {
         if (value == null) {
-            return JsonNullable.undefined();
+            return JsonNullable.of(null);
         }
         return JsonNullable.of(value);
     }
